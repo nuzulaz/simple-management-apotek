@@ -1,0 +1,824 @@
+
+program TugasBesarDAP;
+
+uses crt;
+
+        type
+                apotek=record
+                kodeObat : string;
+                namaObat,jenisObat:string;
+                jumlah:integer;
+                hargaSatuan:real;
+
+
+
+
+        end;
+ const
+ 			Nmax = 100;
+
+var
+          A     : array[1..Nmax] of apotek;
+          i,j,k: integer;
+
+          Arsip : file of apotek;
+          temp : apotek;
+
+
+        procedure HargaMahal;
+        var
+            j,k: Integer;
+            coba : apotek;
+        begin
+
+             for j:=1 to i-1 do
+            begin
+                for k:=i downto j+1 do
+                begin
+                            if (A[k].hargaSatuan > A[k-1].hargaSatuan) then
+                            begin
+
+                                    coba := A[k];
+                                    A[k] := A[k-1];
+                                    A[k-1] := coba;
+
+                            end;
+
+                end;
+
+            end;
+        end;
+
+        procedure HargaMurah;
+        var
+            j,k: Integer;
+            coba : apotek;
+        begin
+
+             for j:=1 to i-1 do
+             begin
+                for k:=i downto j+1 do
+                begin
+                            if (A[k].hargaSatuan < A[k-1].hargaSatuan) then
+                            begin
+
+                                    coba := A[k];
+                                    A[k] := A[k-1];
+                                    A[k-1] := coba;
+
+                            end;
+
+
+                end;
+
+            end;
+        end;
+
+
+        procedure urutStokBesar;
+        var
+            j,k: Integer;
+            coba : apotek;
+        begin
+
+             for j:=1 to i-1 do
+            begin
+                for k:=i downto j+1 do
+                begin
+                            if (A[k].jumlah > A[k-1].jumlah) then
+                            begin
+                                    coba := A[k];
+                                    A[k] := A[k-1];
+                                    A[k-1] := coba;
+
+                            end;
+
+
+                end;
+
+            end;
+        end;
+
+
+        procedure urutStokKecil;
+        var
+            j,k: Integer;
+            coba : apotek;
+        begin
+
+            for j:=1 to i-1 do
+            begin
+                for k:=i downto j+1 do
+                begin
+                            if (A[k].jumlah < A[k-1].jumlah) then
+                            begin
+
+                                    coba := A[k];
+                                    A[k] := A[k-1];
+                                    A[k-1] := coba;
+
+                            end;
+
+                end;
+
+            end;
+        end;
+
+
+
+
+         function cekKode(cari:string):integer;
+        var
+            j,k : integer;
+            cek : boolean;
+
+        begin
+
+           cek := false;
+            j := 1;
+            k := 0;
+
+            while (not cek) and (j <= i) do
+            begin
+                    if A[j].kodeObat = cari then
+                    begin
+                        cek := true;
+                        k   := j;
+                    end
+
+
+                    else
+                        j := j + 1;
+            end;
+
+
+            cekKode := k;
+
+            
+            //   if temp.kodeObat = cari then begin
+            //     cek := true;
+            //     cekKode := j;
+            //     break;
+            //   end
+            // end;
+
+            // if not cek then cekKode := 0;
+
+         end;
+
+
+         procedure tampilanObat(n: integer);
+         begin
+         
+                writeln('===========================');
+                writeln('      KETERANGAN OBAT      ');
+                writeln('===========================');
+                writeln('Nama Obat    : ',A[n].namaObat );
+                writeln('Jenis Obat   : ',A[n].jenisObat );
+                writeln('Kode Obat    : ',A[n].kodeObat );
+                writeln('Stok Obat    : ',A[n].jumlah);
+                writeln('Harga Obat   : ',A[n].hargaSatuan:0:0);
+                writeln('============================');
+                writeln;
+                writeln;
+         readln;
+         end;
+
+         procedure cekJenis1();
+         var
+         	j: Integer;
+         	cari : string;
+
+         begin
+         clrscr;
+
+         		writeln('Masukan Jenis Obat = ');
+            	readln(cari);
+
+         		for j:=1 to i do
+         		begin
+         				if ( A[j].jenisObat = cari ) then
+         				begin
+         						tampilanObat(j);
+         						
+         				end;
+         		end;
+         end;
+
+           function cekNama(cari:string):integer;
+        var
+            j,k : integer;
+            cek : boolean;
+
+        begin
+
+           cek := false;
+            j := 1;
+            k := 0;
+
+            while (not cek) and (j <= i) do
+            begin
+                    if A[j].namaObat = cari then
+                    begin
+                        cek := true;
+                        k   := j;
+                    end
+
+                    else
+                        j := j + 1;
+            end;
+
+            cekNama := k;
+
+         end;
+
+           procedure tampilanEdit2;
+         begin
+         clrscr;
+                writeln('=================================');
+                writeln('||                             ||');
+                writeln('||  NAMA OBAT TIDAK DITEMUKAN  ||');
+                writeln('||                             ||');
+                writeln('=================================');
+
+         readln;
+         end;
+
+
+         procedure tampilanHapus;
+         begin
+         clrscr;
+                writeln('=================================');
+                writeln('||                             ||');
+                writeln('||  PENGHAPUSAN OBAT BERHASIL  ||');
+                writeln('||                             ||');
+                writeln('=================================');
+
+         readln;
+         end;
+
+         procedure hapusData(idx : integer);
+         var
+             k: Integer;
+             temp : apotek;
+         begin
+         clrscr;
+                A[idx].namaObat := '';
+                A[idx].jenisObat := '';
+                A[idx].kodeObat := '';
+                A[idx].jumlah := 0;
+                A[idx].hargaSatuan := 0;
+
+
+                for k:=1 to i do
+                begin
+                    if (A[k].namaObat='') and (A[k].jenisObat = '') and  (A[k].kodeObat = '') or  (A[k].jumlah = 0)  or   (A[k].hargaSatuan = 0)  then
+                        begin
+                            temp:=A[k];
+                            A[k]:=A[k+1];
+                            A[k+1]:=temp;
+                        end;
+                end;
+
+                i:=i-1;
+
+
+         readln;
+         end;
+
+         procedure hapusObat;
+         var
+             idx: Integer;
+             cari:string;
+         begin
+         clrscr;
+                    writeln('Masukan Nama Obat Yang Ingin Di Hapus = ');
+                    readln(cari);
+                    clrscr;
+
+                    idx := cekNama(cari);
+
+                    if idx <> 0 then
+                    begin
+                            hapusData(idx);
+                            tampilanHapus;
+                    end
+                    else
+                            tampilanEdit2;
+
+
+         end;
+
+
+         procedure tampilanEdit1;
+         begin
+         clrscr;
+                writeln('=================================');
+                writeln('||                             ||');
+                writeln('||   PENGEDITAN ANDA BERHASIL  ||');
+                writeln('||                             ||');
+                writeln('=================================');
+
+         readln;
+         end;
+         procedure gantiData(idx : integer ; var n: char);
+         begin
+
+         clrscr;
+
+                writeln(' Apakah anda yakin ingin mengganti data [y/t] ? ');
+                readln(n);
+
+                if(n ='y') or (n ='Y') then
+                begin
+                clrscr;
+                writeln('====================================');
+                writeln('||      PENGEDITAN DATA OBAT      ||');
+                writeln('====================================');
+                write('Masukan Nama Obat = ');
+                readln(A[idx].namaObat);
+                write('Masukan Jenis Obat = ');
+                readln(A[idx].jenisObat);
+                write('Masukan Kode Obat = ');
+                readln(A[idx].kodeObat);
+                write('Stok Obat = ');
+                readln(A[idx].jumlah);
+                write('Harga Satuan Obat = ');
+                readln(A[idx].hargaSatuan);
+
+                end
+                else
+                begin
+                end;
+
+         readln;
+         end;
+
+         procedure editObat;
+         var
+         idx : Integer;
+         cari : string;
+         n : char;
+         begin
+         clrscr;
+                    writeln('Masukan Nama Obat Yang Ingin Di Edit = ');
+                    readln(cari);
+                    clrscr;
+
+                    idx := cekNama(cari);
+
+                    if idx <> 0 then
+                    begin
+                            gantiData(idx,n);
+                            if (n='y') or (n='Y') then
+                            begin
+                                    tampilanEdit1;
+
+                            end
+                            else
+                            begin
+                            end;
+
+                    end
+                    else
+                            tampilanEdit2;
+
+         end;
+
+
+         procedure pilih4(n : char);
+         begin
+         clrscr;
+                    case n of
+                        '0' : begin
+                              end;
+                        '1' : begin
+                                        editObat;
+                              end;
+                        '2' : begin
+                                        hapusObat;
+
+                              end;
+                    end;
+
+
+         end;
+
+         procedure menuObat;
+         var
+         n : char;
+         begin
+            repeat
+                repeat
+                clrscr;
+
+                writeln('========================');
+                writeln('||   PENGEDITAN DATA  ||');
+                writeln('========================');
+                writeln('||                    ||');
+                writeln('|| 1. Edit Data Obat  ||');
+                writeln('|| 2. Hapus Data Obat ||');
+                writeln('|| 0. Kembali         ||');
+                writeln('||                    ||');
+                writeln('========================');
+                writeln;
+                write('Pilih Angka Pada Menu Pengeditan Data = ');
+                readln(n);
+
+                until (n='1') or (n='2') or (n='0');
+
+
+                pilih4(n);
+
+            until (n ='0');
+         end;
+
+        procedure afterUrut1;
+        var
+            j: Integer;
+        begin
+                urutStokKecil;
+                clrscr;
+                for j:=1 to i do
+                    tampilanObat(j);
+
+        end;
+
+        procedure afterUrut2;
+        var
+            j: Integer;
+            
+        begin
+                urutStokBesar;
+                clrscr;
+                for j:=1 to i do
+                    tampilanObat(j);
+        end;
+
+        procedure afterUrut3;
+        var
+            j: Integer;
+        begin
+                HargaMahal;
+                clrscr;
+                for j:=1 to i do
+                    tampilanObat(j);
+        end;
+
+        procedure afterUrut4;
+        var
+            j: Integer;
+        begin
+                HargaMurah;
+                clrscr;
+                for j:=1 to i do
+                    tampilanObat(j);
+        end;
+
+
+
+
+        procedure pilih3(n: char);
+        begin
+                    case n of
+                        '1' : begin
+                                      afterUrut2;
+                              end;
+                        '2' : begin
+                                      afterUrut1;
+                              end;
+                        '3' : begin
+                                      afterUrut3;
+                              end;
+                        '4' : begin
+                                      afterUrut4;
+                              end;
+                    end;
+
+        end;
+
+        procedure informasiObat;
+        var
+            n: char;
+        begin
+                repeat
+                    repeat
+                    clrscr;
+
+
+                            writeln('==================================');
+                            writeln('||  TAMPILKAN OBAT BERDASARKAN  ||');
+                            writeln('==================================');
+                            writeln('||                              ||');
+                            writeln('|| 1. Stok Yang Paling Banyak   ||');
+                            writeln('|| 2. Stok Yang Paling Sedikit  ||');
+                            writeln('|| 3. Harga Termahal            ||');
+                            writeln('|| 4. Harga Termurah            ||');
+                            writeln('|| 0. Kembali                   ||');
+                            writeln('||                              ||');
+                            writeln('==================================');
+                            writeln;
+                            writeln('Ingin Menampilkan Obat Berdasarkan Apa (Pilih Angkanya Saja) = ');
+                            readln(n);
+
+                        until(n='0') or (n='1') or (n='2') or (n='3') or (n='4');
+
+                        pilih3(n);
+
+                    until(n='0');
+
+
+        end;
+
+         procedure tampilanObat2();
+        begin
+        clrscr;
+                                writeln('==========================');
+                                writeln('||                      ||');
+                                writeln('|| OBAT YANG ANDA CARI  ||');
+                                writeln('||     TIDAK ADA        ||');
+                                writeln('||                      ||');
+                                writeln('==========================');
+                                readln;
+        end;
+
+
+
+        procedure cekNama1();
+        var
+            cari : string;
+            idx : integer;
+
+        begin
+        clrscr;
+
+            write('Masukan Nama Obat = ');
+            readln(cari);
+
+            clrscr;
+
+            idx := cekNama(cari);
+
+            if idx <> 0 then
+                begin
+                tampilanObat(idx);
+                end
+            else
+                tampilanObat2();
+
+        readln;
+        end;
+
+
+
+        procedure cekKode1();
+        var
+            cari : string;
+            idx : integer;
+
+        begin
+        clrscr;
+            writeln('Masukan Kode Obat = ');
+            readln(cari);
+
+            clrscr;
+
+            idx := cekKode(cari);
+
+            if idx <> 0 then
+                begin
+                tampilanObat(idx);
+                end
+            else
+                tampilanObat2();
+
+        readln;
+        end;
+
+         procedure pilih2(n:char);
+         begin
+
+            case n of
+                '1' : begin
+                                cekKode1();
+                      end;
+                '2' : begin
+                                cekNama1();
+                      end;
+                '3' : begin
+                                cekJenis1();
+                      end;
+                '0' : begin
+
+                      end;
+            end;
+        end;
+
+        procedure pencarianObat;
+        var
+        temp:char;
+        begin
+        repeat
+            repeat
+                clrscr;
+                writeln('===============================================');
+                writeln('||            MENU PENCARIAN OBAT            ||');
+                writeln('=============================================||');
+                writeln('|| 1. Kode Obat                              ||');
+                writeln('|| 2. Nama Obat                              ||');
+                writeln('|| 3. Jenis Obat                             ||');
+                writeln('|| 0. Kembali                                ||');
+                writeln('===============================================');
+                writeln();
+                writeln('Ingin melakukan pencarian obat berdasarkan apa (Masukan angkanya saja) = ');
+                readln(temp);
+            until (temp='1') or (temp='2') or (temp='3') or (temp='0');
+            pilih2(temp);
+
+        until(temp='0');
+
+
+
+        end;
+
+        procedure tampilandaftar;
+        begin
+            clrscr;
+                    writeln('============================');
+                    writeln('||                        ||');
+                    writeln('||   BERHASIL MENDAFTAR   ||');
+                    writeln('||                        ||');
+                    writeln('============================');
+        readln;
+        end;
+
+        procedure daftarObat;
+        var
+        b : char;
+        begin
+        repeat
+            write('Apakah anda yakin ingin melakukan pendaftaran obat [y/t] ? ');
+            readln(b);
+            clrscr;
+        until(b='y') or (b='Y') or (b='t') or (b='T');
+
+            if (b = 'y') or (b = 'Y') then
+            begin
+
+
+                i := i + 1;
+
+
+
+                writeln('====================================');
+                writeln('||          PENGISIAN OBAT        ||');
+                writeln('====================================');
+
+                write('Masukan Nama Obat = ');
+                readln(A[i].namaObat);
+                write('Masukan Jenis Obat = ');
+                readln(A[i].jenisObat);
+                write('Masukan Kode Obat = ');
+                readln(A[i].kodeObat);
+                write('Stok Obat = ');
+                readln(A[i].jumlah);
+                write('Harga Satuan Obat = ');
+                readln(A[i].hargaSatuan);
+
+
+                tampilandaftar;
+            end
+
+            else
+                begin
+                end;
+        end;
+
+
+     procedure pilih1(n : char);
+     begin
+     clrscr;
+             case n of
+                '0'     : begin
+                          end;
+                '1'     : begin
+                            daftarObat;
+                            write(Arsip,A[i]);
+                          end;
+                '2'     : begin
+                            pencarianObat;
+                          end;
+                '3'     : begin
+                            informasiObat;
+                          end;
+                '4'     : begin
+                            menuObat;
+                          end;
+                end;
+    end;
+
+
+    procedure tampilanmenu();
+    var
+    pilihan : char;
+
+    begin
+        repeat
+            repeat
+            clrscr;
+
+                writeln('***************************************************');
+                writeln('*                   MENU                          *');
+                writeln('***************************************************');
+                writeln('* 1. Pendaftaran Obat                             *');
+                writeln('* 2. Pencarian Obat                               *');
+                writeln('* 3. Tampilan Obat                                *');
+                writeln('* 4. Edit Data Obat                               *');
+                writeln('* 0. Exit                                         *');
+                writeln('*                                                 *');
+                writeln('***************************************************');
+                writeln();
+                writeln(' Pilihan Angka Menu = ');
+                readln(pilihan);
+
+            until (pilihan='0') or (pilihan='1') or (pilihan='2') or (pilihan='3') or (pilihan='4');
+
+            pilih1(pilihan);
+
+        until (pilihan='0');
+    end;
+
+
+
+
+
+    procedure tampilanawal();
+    begin
+         clrscr;
+                writeln('***************************************************');
+                writeln('*                                                 *');
+                writeln('*                 SELAMAT DATANG                  *');
+                writeln('*                  DI APLIKASI                    *');
+                writeln('*              MANAJEMEN DATA APOTEK              *');
+                writeln('*                                                 *');
+                writeln('***************************************************');
+                writeln();
+                readln;
+    end;
+
+
+
+    procedure saveArray;
+  var
+    j:integer;
+
+  begin
+    for j:=1 to i do
+      begin
+        write(Arsip,A[j]);
+      end;
+  end;
+
+
+BEGIN
+
+assign(Arsip, 'azmi.txt');
+
+reset(Arsip);
+
+for i := 1 to filesize(Arsip) do
+begin
+      read(Arsip, A[i]);
+end;
+
+
+
+tampilanawal();
+tampilanmenu();
+
+
+rewrite(Arsip);
+
+
+saveArray;
+
+close(Arsip);
+
+readln;
+END.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
